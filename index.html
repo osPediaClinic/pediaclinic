@@ -52,8 +52,9 @@
       color: var(--text);
       -webkit-font-smoothing: antialiased;
     }
+    /* ✅ UPDATED: responsive max-width for tablet */
     #app {
-      max-width: 480px;
+      max-width: 720px;
       margin: 0 auto;
       height: 100vh;
       height: 100dvh;
@@ -478,6 +479,14 @@
       padding: 8px;
       font-size: 13px;
     }
+    /* ✅ input for free-text birth date inside arrival row */
+    .arrival-row .dob-input {
+      flex: 2;
+      min-width: 120px;
+      margin: 0;
+      padding: 8px;
+      font-size: 13px;
+    }
     .arrival-row button {
       flex: 1;
       min-width: 80px;
@@ -805,6 +814,202 @@
       font-size: 12.5px;
       color: var(--muted);
     }
+
+    /* ============================================================
+       ✅ NEW: TABLET & LARGER SCREEN OPTIMIZATIONS
+       ============================================================ */
+    @media (min-width: 700px) {
+      /* Wider app container for tablet */
+      #app {
+        max-width: 900px;
+        box-shadow: 0 0 40px rgba(20, 88, 100, .08);
+      }
+      /* Bigger topbar text */
+      .topbar {
+        padding: 22px 28px 20px;
+      }
+      .topbar h1 {
+        font-size: 20px;
+      }
+      .topbar .sub {
+        font-size: 14px;
+      }
+      .topbar .back {
+        width: 42px;
+        height: 42px;
+        font-size: 22px;
+      }
+      /* Bigger content padding */
+      .content {
+        padding: 24px 28px 32px;
+      }
+      /* Bigger hero */
+      .hero {
+        padding: 50px 30px 34px;
+      }
+      .hero .badge {
+        width: 96px;
+        height: 96px;
+        font-size: 46px;
+        border-radius: 28px;
+      }
+      .hero h1 {
+        font-size: 28px;
+      }
+      .hero p {
+        font-size: 17px;
+      }
+      /* Bigger role buttons */
+      .role-list {
+        padding: 0 60px 40px;
+        gap: 16px;
+      }
+      .role-btn {
+        padding: 22px 26px;
+      }
+      .role-btn .icon {
+        width: 58px;
+        height: 58px;
+        font-size: 28px;
+        border-radius: 18px;
+      }
+      .role-btn .txt strong {
+        font-size: 18px;
+      }
+      .role-btn .txt span {
+        font-size: 15px;
+      }
+      .role-btn .arrow {
+        font-size: 24px;
+      }
+      /* Bigger clinic grid */
+      .clinic-grid {
+        grid-template-columns: 1fr 1fr;
+        padding: 0 40px 40px;
+        gap: 18px;
+      }
+      .clinic-card {
+        padding: 28px 18px;
+      }
+      .clinic-card .ci {
+        font-size: 42px;
+      }
+      .clinic-card strong {
+        font-size: 18px;
+      }
+      .clinic-card span {
+        font-size: 14px;
+      }
+      /* Bigger forms */
+      input, textarea, select {
+        font-size: 16px;
+        padding: 13px 15px;
+      }
+      .btn {
+        font-size: 16px;
+        padding: 15px 20px;
+      }
+      .section-title {
+        font-size: 15px;
+        margin-bottom: 14px;
+      }
+      label {
+        font-size: 14.5px;
+      }
+      .card {
+        padding: 20px;
+      }
+      /* Bigger bottom nav */
+      .nav-btn .ic {
+        font-size: 24px;
+      }
+      .nav-btn .lb {
+        font-size: 13px;
+      }
+      /* Bigger clinic info */
+      .info-row .lbl {
+        font-size: 13.5px;
+      }
+      .info-row .val {
+        font-size: 17px;
+      }
+      .info-row .ic {
+        font-size: 24px;
+        width: 32px;
+      }
+    }
+
+    /* ============================================================
+       ✅ NEW: DOCTOR PANEL — LARGER FONTS FOR PATIENT DATA
+       ============================================================ */
+    /* Applied via .doctor-mode class on content wrapper */
+    .doctor-mode .current-patient {
+      padding: 28px;
+    }
+    .doctor-mode .current-patient .tag {
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    .doctor-mode .current-patient .name {
+      font-size: 30px;
+      margin-bottom: 12px;
+    }
+    .doctor-mode .current-patient .phone {
+      font-size: 19px;
+      margin-bottom: 10px;
+    }
+    .doctor-mode .current-patient .service {
+      font-size: 19px;
+      margin-bottom: 16px;
+    }
+    .doctor-mode .current-patient .order {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    .doctor-mode .current-patient .btn {
+      font-size: 19px;
+      padding: 16px;
+    }
+    /* Bigger queue item text in doctor view */
+    .doctor-mode .queue-item {
+      padding: 18px 18px;
+    }
+    .doctor-mode .queue-item .num {
+      width: 44px;
+      height: 44px;
+      font-size: 18px;
+    }
+    .doctor-mode .queue-item .qi-name {
+      font-size: 21px;
+    }
+    .doctor-mode .queue-item .qi-time {
+      font-size: 16px;
+      margin-top: 2px;
+    }
+    .doctor-mode .service-badge {
+      font-size: 14px;
+      padding: 4px 12px;
+    }
+    /* Bigger section titles in doctor view */
+    .doctor-mode .section-title {
+      font-size: 20px;
+      margin: 12px 0 14px;
+    }
+    /* Bigger "call next" card */
+    .doctor-mode .card .section-title {
+      font-size: 20px;
+    }
+    .doctor-mode .card .btn-accent {
+      font-size: 20px;
+      padding: 18px;
+    }
+    /* Bigger empty state */
+    .doctor-mode .empty p {
+      font-size: 17px;
+    }
+    .doctor-mode .empty .ic {
+      font-size: 42px;
+    }
   </style>
   <!-- Supabase JS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
@@ -971,8 +1176,10 @@
       done: 'تم الكشف'
     };
 
+    // ✅ added "كشف جديد" service type
     const SERVICE_TYPES = [
       { value: 'كشف', label: 'كشف' },
+      { value: 'كشف جديد', label: 'كشف جديد' },
       { value: 'كشف مستعجل', label: 'كشف مستعجل' },
       { value: 'استشارة', label: 'استشارة' },
       { value: 'تحاليل', label: 'تحاليل' }
@@ -1104,7 +1311,9 @@
       }
 
       const isChatTab = (state.role === 'secretary' || state.role === 'doctor') && state.tab === 'messages';
-      const contentClass = 'content' + (isChatTab ? ' chat-mode' : '');
+      // ✅ Add doctor-mode class for larger fonts when doctor is viewing patients
+      const isDoctorQueue = state.role === 'doctor' && state.tab === 'queue';
+      const contentClass = 'content' + (isChatTab ? ' chat-mode' : '') + (isDoctorQueue ? ' doctor-mode' : '');
 
       app.innerHTML = `
           <div class="topbar">
@@ -1367,6 +1576,7 @@
               <span class="status-badge status-${q.status}">${STATUS_LABELS[q.status]}</span>
             </div>
             ${q.guardian_name ? `<div class="bk-meta" style="font-size:13px;">ولي الأمر: ${escapeHtml(q.guardian_name)}</div>` : ''}
+            ${q.birth_date ? `<div class="bk-meta" style="font-size:13px;">🎂 تاريخ الميلاد: ${escapeHtml(q.birth_date)}</div>` : ''}
             <div class="bk-meta" style="font-size:16px;font-weight:700;color:var(--primary-dark);">
               رقم الدور: <span style="font-size:22px;background:var(--primary);color:#fff;padding:2px 14px;border-radius:8px;">${q.order_number || 'غير محدد'}</span>
             </div>
@@ -1398,9 +1608,10 @@
             ` : ''}
             ${b.status === 'confirmed' ? `
               <div class="arrival-row">
-                <select id="service_${b.id}">
+                <select id="service_${b.id}" onchange="toggleArrivalDob('${b.id}')">
                   ${SERVICE_TYPES.map(s => `<option value="${s.value}">${s.label}</option>`).join('')}
                 </select>
+                <input type="text" id="dob_${b.id}" class="dob-input" style="display:none;" placeholder="اكتبي تاريخ الميلاد">
                 <button class="btn btn-accent btn-sm" onclick="markArrivedWithService('${b.id}')">تسجيل وصول</button>
                 <button class="btn btn-danger-outline btn-sm" onclick="setBookingStatus('${b.id}','cancelled')">إلغاء</button>
               </div>
@@ -1449,13 +1660,34 @@
     }
 
     // ================================================================
-    //  MARK ARRIVED WITH SERVICE (copies guardian)
+    //  Toggle birth date field for "كشف جديد" in confirmed bookings
+    // ================================================================
+    function toggleArrivalDob(id) {
+      const sel = document.getElementById('service_' + id);
+      const dob = document.getElementById('dob_' + id);
+      if (!sel || !dob) return;
+      const show = sel.value === 'كشف جديد';
+      dob.style.display = show ? 'block' : 'none';
+      if (!show) dob.value = '';
+    }
+
+    // ================================================================
+    //  MARK ARRIVED WITH SERVICE (copies guardian + birth_date)
     // ================================================================
     async function markArrivedWithService(id) {
       const serviceSelect = document.getElementById('service_' + id);
       if (!serviceSelect) return;
       const serviceType = serviceSelect.value;
       if (!serviceType) { showToast('يرجى اختيار نوع الخدمة'); return; }
+
+      // read free-text birth date when service is "كشف جديد"
+      const dobEl = document.getElementById('dob_' + id);
+      const birthDate = (serviceType === 'كشف جديد' && dobEl) ? dobEl.value.trim() : '';
+      if (serviceType === 'كشف جديد' && !birthDate) {
+        showToast('من فضلك اكتبي تاريخ الميلاد');
+        return;
+      }
+
       const b = DB.bookings.find(x => x.id === id);
       if (!b) return;
 
@@ -1471,7 +1703,8 @@
         status: 'waiting',
         booking_id: b.id,
         service_type: serviceType,
-        order_number: nextOrder
+        order_number: nextOrder,
+        birth_date: birthDate || null
       };
 
       const { error: e1 } = await sb.from('bookings').update({ status: 'arrived', service_type: serviceType }).eq('id', id);
@@ -1615,9 +1848,13 @@
             <label>رقم الهاتف (اختياري)</label>
             <input id="wPhone" type="tel" placeholder="01xxxxxxxxx">
             <label>نوع الخدمة</label>
-            <select id="wService">
+            <select id="wService" onchange="toggleWalkInDob()">
               ${SERVICE_TYPES.map(s => `<option value="${s.value}">${s.label}</option>`).join('')}
             </select>
+            <div id="walkInDobWrap" style="display:none;">
+              <label>تاريخ الميلاد</label>
+              <input id="wBirth" type="text" placeholder="مثال: 15/3/2020 أو 3 سنوات">
+            </div>
             <button class="btn btn-primary" onclick="addWalkIn()">إضافة لغرفة الانتظار</button>
           </div>
           <div class="section-title">غرفة الانتظار الآن (${waiting.length})</div>
@@ -1630,6 +1867,7 @@
                 <div style="flex:1;">
                   <div class="qi-name">${escapeHtml(q.name)} ${q.service_type ? '<span class="service-badge">'+escapeHtml(q.service_type)+'</span>' : ''}</div>
                   ${q.guardian_name ? `<div class="qi-time" style="font-weight:500;">ولي الأمر: ${escapeHtml(q.guardian_name)}</div>` : ''}
+                  ${q.birth_date ? `<div class="qi-time" style="font-weight:500;">🎂 تاريخ الميلاد: ${escapeHtml(q.birth_date)}</div>` : ''}
                   <div class="qi-time">${q.phone ? ('📞 ' + escapeHtml(q.phone) + ' — ') : ''}<span class="status-badge status-${q.status}">${STATUS_LABELS[q.status]}</span></div>
                   <div style="margin-top:4px;font-size:13px;font-weight:700;color:var(--primary-dark);">
                     رقم الدور: ${q.order_number ? '<span style="background:var(--primary);color:#fff;padding:2px 8px;border-radius:4px;">'+q.order_number+'</span>' : 'غير محدد'}
@@ -1647,7 +1885,19 @@
     }
 
     // ================================================================
-    //  ADD WALK-IN (with guardian)
+    //  Toggle birth date field for "كشف جديد" in walk-in form
+    // ================================================================
+    function toggleWalkInDob() {
+      const sel = document.getElementById('wService');
+      const wrap = document.getElementById('walkInDobWrap');
+      if (!sel || !wrap) return;
+      const show = sel.value === 'كشف جديد';
+      wrap.style.display = show ? 'block' : 'none';
+      if (!show) { const b = document.getElementById('wBirth'); if (b) b.value = ''; }
+    }
+
+    // ================================================================
+    //  ADD WALK-IN (with guardian + birth_date)
     // ================================================================
     async function addWalkIn() {
       const name = document.getElementById('wChild').value.trim();
@@ -1655,6 +1905,14 @@
       const phone = document.getElementById('wPhone').value.trim();
       const serviceType = document.getElementById('wService').value;
       if (!name) { showToast('أدخل اسم الطفل أولاً'); return; }
+
+      // read free-text birth date when service is "كشف جديد"
+      const birthEl = document.getElementById('wBirth');
+      const birthDate = (serviceType === 'كشف جديد' && birthEl) ? birthEl.value.trim() : '';
+      if (serviceType === 'كشف جديد' && !birthDate) {
+        showToast('من فضلك اكتبي تاريخ الميلاد');
+        return;
+      }
 
       const nextOrder = await getNextOrderNumber(state.selectedClinic);
 
@@ -1667,7 +1925,8 @@
         arrived_at: Date.now(),
         status: 'waiting',
         service_type: serviceType,
-        order_number: nextOrder
+        order_number: nextOrder,
+        birth_date: birthDate || null
       };
       const { error } = await sb.from('queue').insert(row);
       if (error) { showToast('تعذر الإضافة لغرفة الانتظار');
@@ -1719,7 +1978,7 @@
     }
 
     // ================================================================
-    //  DOCTOR VIEWS (shows guardian)
+    //  DOCTOR VIEWS (shows guardian + birth_date)
     // ================================================================
     function renderDocQueue() {
       const queue = getFilteredQueue();
@@ -1733,6 +1992,7 @@
               <div class="tag">المريض الحالي</div>
               <div class="name">${escapeHtml(current.name)}</div>
               ${current.guardian_name ? `<div class="phone">ولي الأمر: ${escapeHtml(current.guardian_name)}</div>` : ''}
+              ${current.birth_date ? `<div class="phone">🎂 تاريخ الميلاد: ${escapeHtml(current.birth_date)}</div>` : ''}
               <div class="phone">${current.phone ? ('📞 ' + escapeHtml(current.phone)) : 'بدون رقم هاتف'}</div>
               <div class="order">رقم الدور: <span style="background:#fff;color:var(--primary-dark);padding:2px 12px;border-radius:6px;font-size:22px;">${current.order_number || '—'}</span></div>
               <div class="service">نوع الخدمة: ${current.service_type ? '<span style="background:#fff;color:var(--primary-dark);padding:2px 10px;border-radius:12px;font-weight:700;">'+escapeHtml(current.service_type)+'</span>' : 'غير محدد'}</div>
@@ -1757,6 +2017,7 @@
               <div style="flex:1;">
                 <div class="qi-name">${escapeHtml(q.name)} ${q.service_type ? '<span class="service-badge">'+escapeHtml(q.service_type)+'</span>' : ''}</div>
                 ${q.guardian_name ? `<div class="qi-time">ولي الأمر: ${escapeHtml(q.guardian_name)}</div>` : ''}
+                ${q.birth_date ? `<div class="qi-time">🎂 تاريخ الميلاد: ${escapeHtml(q.birth_date)}</div>` : ''}
                 <div class="qi-time">رقم الدور: <strong>${q.order_number || '—'}</strong>  —  ${q.phone ? ('📞 ' + escapeHtml(q.phone)) : 'بدون رقم'}</div>
               </div>
             </div>
