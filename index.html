@@ -1643,22 +1643,19 @@
 
     // ================================================================
     //  GET NEXT ORDER NUMBER
-    //  ✅ FIXED: excludes "done" patients so numbering restarts correctly
+    //  ✅ FIXED: counts ONLY active patients from server, returns next sequential number
     // ================================================================
     async function getNextOrderNumber(clinicId) {
       const { data, error } = await sb
         .from('queue')
-        .select('order_number')
+        .select('id')
         .eq('clinic_id', clinicId)
-        .neq('status', 'done')   // ✅ استثناء المرضى اللي خلصوا
-        .order('order_number', { ascending: false })
-        .limit(1);
+        .in('status', ['waiting', 'with_doctor']);   // ✅ بس المرضى النشطين
       if (error) {
         console.error('Error getting next order number:', error);
         return 1;
       }
-      if (data.length === 0) return 1;
-      return data[0].order_number + 1;
+      return (data ? data.length : 0) + 1;   // ✅ العدد + 1
     }
 
     // ================================================================
@@ -1769,24 +1766,33 @@
     }
 
     // ================================================================
-    //  RENUMBER ALL WAITING PATIENTS (after finish or delete)
+    //  RENUMBER ALL ACTIVE PATIENTS
+    //  ✅ FIXED: fetches ONLY active patients from server, renumbers sequentially
     // ================================================================
     async function renumberQueue(clinicId) {
-      const waiting = getFilteredQueue().filter(q => q.status !== 'done').sort((a, b) => (a.order_number || 999) - (b
-      .order_number || 999));
+      const { data, error } = await sb
+        .from('queue')
+        .select('id, order_number')
+        .eq('clinic_id', clinicId)
+        .in('status', ['waiting', 'with_doctor'])   // ✅ بس المرضى النشطين
+        .order('order_number', { ascending: true, nullsFirst: false })
+        .order('arrived_at', { ascending: true });
+      if (error) { console.error('Renumber fetch error:', error); return; }
+      if (!data || !data.length) return;
+
       let currentNumber = 1;
-      for (const p of waiting) {
-        if (p.order_number !== currentNumber) {
-          p.order_number = currentNumber;
-          const { error } = await sb.from('queue').update({ order_number: currentNumber }).eq('id', p.id);
-          if (error) { console.error('Renumber error:', error); }
+      for (const row of data) {
+        if (row.order_number !== currentNumber) {
+          const { error: uErr } = await sb
+            .from('queue')
+            .update({ order_number: currentNumber })
+            .eq('id', row.id);
+          if (!uErr) {
+            const local = DB.queue.find(q => q.id === row.id);
+            if (local) local.order_number = currentNumber;
+          }
         }
         currentNumber++;
-      }
-      // Update local DB
-      for (const p of waiting) {
-        const local = DB.queue.find(q => q.id === p.id);
-        if (local) local.order_number = p.order_number;
       }
     }
 
@@ -1810,14 +1816,16 @@
 
     // ================================================================
     //  FINISH PATIENT (with renumber)
+    //  ✅ FIXED: clears order_number so it doesn't interfere with future numbering
     // ================================================================
     async function finishPatient(id) {
       const q = DB.queue.find(x => x.id === id);
       if (!q) return;
-      const { error } = await sb.from('queue').update({ status: 'done' }).eq('id', id);
+      const { error } = await sb.from('queue').update({ status: 'done', order_number: null }).eq('id', id);
       if (error) { showToast('تعذر إنهاء الكشف');
         console.error(error); return; }
       q.status = 'done';
+      q.order_number = null;
       await renumberQueue(state.selectedClinic);
       render();
       showToast('تم إنهاء الكشف وإعادة ترقيم الباقين');
