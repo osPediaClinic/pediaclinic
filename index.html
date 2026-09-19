@@ -1643,12 +1643,14 @@
 
     // ================================================================
     //  GET NEXT ORDER NUMBER
+    //  ✅ FIXED: excludes "done" patients so numbering restarts correctly
     // ================================================================
     async function getNextOrderNumber(clinicId) {
       const { data, error } = await sb
         .from('queue')
         .select('order_number')
         .eq('clinic_id', clinicId)
+        .neq('status', 'done')   // ✅ استثناء المرضى اللي خلصوا
         .order('order_number', { ascending: false })
         .limit(1);
       if (error) {
@@ -1691,6 +1693,8 @@
       const b = DB.bookings.find(x => x.id === id);
       if (!b) return;
 
+      // ✅ نعيد ترقيم المنتظرين الحاليين قبل ما نحسب رقم جديد
+      await renumberQueue(state.selectedClinic);
       const nextOrder = await getNextOrderNumber(state.selectedClinic);
 
       const queueRow = {
@@ -1914,6 +1918,8 @@
         return;
       }
 
+      // ✅ نعيد ترقيم المنتظرين الحاليين قبل ما نحسب رقم جديد
+      await renumberQueue(state.selectedClinic);
       const nextOrder = await getNextOrderNumber(state.selectedClinic);
 
       const row = {
