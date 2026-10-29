@@ -1102,35 +1102,62 @@
     let dbReady = false;
     let dbError = false;
 
-    // Load all data from Supabase
+    // Fetch every row in pages instead of relying on Supabase's default
+    // maximum response size (commonly 1,000 rows per request).
+    // orderColumn must be a stable, unique column for the selected table.
+    async function fetchAllRows(table, orderColumn = 'id') {
+      const pageSize = 1000;
+      const allRows = [];
+      let from = 0;
+
+      while (true) {
+        const { data, error } = await sb
+          .from(table)
+          .select('*')
+          .order(orderColumn, { ascending: true })
+          .range(from, from + pageSize - 1);
+
+        if (error) throw error;
+
+        const page = data || [];
+        allRows.push(...page);
+
+        if (page.length < pageSize) break;
+        from += pageSize;
+      }
+
+      return allRows;
+    }
+
+    // Load all data from Supabase, including rows beyond the API page limit.
     async function loadDB() {
       try {
-        const [settingsRes, bookingsRes, queueRes, messagesRes] = await Promise.all([
-          sb.from('settings').select('*'),
-          sb.from('bookings').select('*'),
-          sb.from('queue').select('*'),
-          sb.from('messages').select('*')
+        const [settingsRows, bookingRows, queueRows, messageRows] = await Promise.all([
+          fetchAllRows('settings', 'clinic_id'),
+          fetchAllRows('bookings', 'id'),
+          fetchAllRows('queue', 'id'),
+          fetchAllRows('messages', 'id')
         ]);
-        if (settingsRes.error) throw settingsRes.error;
-        if (bookingsRes.error) throw bookingsRes.error;
-        if (queueRes.error) throw queueRes.error;
-        if (messagesRes.error) throw messagesRes.error;
 
         DB.settings = {};
-        if (settingsRes.data && settingsRes.data.length) {
-          settingsRes.data.forEach(s => { DB.settings[s.clinic_id] = s; });
+        if (settingsRows.length) {
+          settingsRows.forEach(s => { DB.settings[s.clinic_id] = s; });
         }
+
         // Ensure clinic_1 and clinic_2 exist
-        ['clinic_1', 'clinic_2'].forEach(id => {
+        for (const id of ['clinic_1', 'clinic_2']) {
           if (!DB.settings[id]) {
             DB.settings[id] = defaultSettings(id);
-            sb.from('settings').upsert(DB.settings[id], { onConflict: 'clinic_id' }).then();
+            const { error } = await sb
+              .from('settings')
+              .upsert(DB.settings[id], { onConflict: 'clinic_id' });
+            if (error) throw error;
           }
-        });
+        }
 
-        DB.bookings = bookingsRes.data || [];
-        DB.queue = queueRes.data || [];
-        DB.messages = messagesRes.data || [];
+        DB.bookings = bookingRows;
+        DB.queue = queueRows;
+        DB.messages = messageRows;
         dbReady = true;
         dbError = false;
       } catch (e) {
