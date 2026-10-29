@@ -1842,20 +1842,24 @@
     }
 
     // ================================================================
-    //  FINISH PATIENT (with renumber)
-    //  ✅ FIXED: clears order_number so it doesn't interfere with future numbering
+    //  FINISH PATIENT: permanently remove the queue entry, then renumber
+    //  The original booking remains in the bookings table.
     // ================================================================
     async function finishPatient(id) {
       const q = DB.queue.find(x => x.id === id);
       if (!q) return;
-      const { error } = await sb.from('queue').update({ status: 'done', order_number: null }).eq('id', id);
-      if (error) { showToast('تعذر إنهاء الكشف');
-        console.error(error); return; }
-      q.status = 'done';
-      q.order_number = null;
+
+      const { error } = await sb.from('queue').delete().eq('id', id);
+      if (error) {
+        showToast('تعذر إنهاء الكشف وحذف المريض من قائمة الانتظار: ' + error.message);
+        console.error('Finish/delete queue error:', error);
+        return;
+      }
+
+      DB.queue = DB.queue.filter(p => p.id !== id);
       await renumberQueue(state.selectedClinic);
       render();
-      showToast('تم إنهاء الكشف وإعادة ترقيم الباقين');
+      showToast('تم إنهاء الكشف وحذف المريض من قائمة الانتظار');
     }
 
     // ================================================================
