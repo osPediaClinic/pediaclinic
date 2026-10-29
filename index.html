@@ -1846,17 +1846,37 @@
     //  The original booking remains in the bookings table.
     // ================================================================
     async function finishPatient(id) {
-      const q = DB.queue.find(x => x.id === id);
-      if (!q) return;
-
-      const { error } = await sb.from('queue').delete().eq('id', id);
-      if (error) {
-        showToast('تعذر إنهاء الكشف وحذف المريض من قائمة الانتظار: ' + error.message);
-        console.error('Finish/delete queue error:', error);
+      const q = DB.queue.find(x => String(x.id) === String(id));
+      if (!q) {
+        showToast('لم يتم العثور على المريض في قائمة الانتظار. حدّث الصفحة وحاول مرة أخرى.');
         return;
       }
 
-      DB.queue = DB.queue.filter(p => p.id !== id);
+      // Ask Supabase to return the deleted row. An empty result can mean
+      // that the row was not matched or that the DELETE RLS policy blocked it.
+      const { data, error } = await sb
+        .from('queue')
+        .delete({ count: 'exact' })
+        .eq('id', q.id)
+        .eq('clinic_id', q.clinic_id)
+        .select('id');
+
+      if (error) {
+        console.error('Finish/delete queue error:', error);
+        showToast('فشل حذف المريض من قاعدة البيانات: ' + error.message);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.error('Supabase did not return a deleted queue row. Check queue DELETE RLS policy and clinic_id.', {
+          id: q.id,
+          clinic_id: q.clinic_id
+        });
+        showToast('Supabase لم يحذف السجل. غالبًا صلاحيات RLS تمنع الحذف؛ راجع سياسة DELETE لجدول queue.');
+        return;
+      }
+
+      DB.queue = DB.queue.filter(p => String(p.id) !== String(id));
       await renumberQueue(state.selectedClinic);
       render();
       showToast('تم إنهاء الكشف وحذف المريض من قائمة الانتظار');
